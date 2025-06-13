@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { auth } from '../firebase';
+import { auth } from '../utils/firebase';
 import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
+import { doc, getDoc, setDoc } from 'firebase/firestore';
+import { db } from '../utils/firebase';
 
 export default function Login() {
   const [phone, setPhone] = useState('');
@@ -8,14 +10,47 @@ export default function Login() {
   const [showOtp, setShowOtp] = useState(false);
   const [confirmationResult, setConfirmationResult] = useState(null);
 
-  const setupRecaptcha = () => {
+  const mergeGuestCart = async (userId) => {
+    const guestCart = JSON.parse(localStorage.getItem('cart')) || [];
+    const userCartRef = doc(db, 'carts', userId);
+    const userSnap = await getDoc(userCartRef);
+
+    let merged = guestCart;
+
+    if (userSnap.exists()) {
+      const existing = userSnap.data().products || [];
+      const productMap = {};
+
+      // Merge quantities for same product IDs
+      existing.forEach(item => productMap[item.id] = item);
+      guestCart.forEach(item => {
+        if (productMap[item.id]) {
+          productMap[item.id].qty += item.qty;
+        } else {
+          productMap[item.id] = item;
+        }
+      });
+
+      merged = Object.values(productMap);
+    }
+
+    // Save merged cart to Firestore
+    await setDoc(userCartRef, { products: merged });
+
+    // Update localStorage
+    localStorage.setItem('cart', JSON.stringify(merged));
+  };
+
+const setupRecaptcha = () => {
+  if (!window.recaptchaVerifier) {
     window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
       size: 'invisible',
       callback: (response) => {
-        console.log("Recaptcha verified", response);
+        console.log('Recaptcha verified', response);
       },
     });
-  };
+  }
+};
 
   const handleSendOtp = async () => {
     setupRecaptcha();
@@ -32,12 +67,20 @@ export default function Login() {
       alert(err.message);
     }
   };
-
   const handleVerifyOtp = async () => {
     try {
-      await confirmationResult.confirm(otp);
+      const result = await confirmationResult.confirm(otp);
+      const user = result.user;
+
       alert('Phone Verified Successfully!');
-      // Redirect to homepage or save login status
+
+      // Merge guest cart with this user's cart
+      await mergeGuestCart(user.uid);
+
+      // (Optional) Redirect or store user info
+      // localStorage.setItem("uid", user.uid);
+      // navigate('/');
+
     } catch (err) {
       console.error("OTP Verification Failed:", err);
       alert('Invalid OTP!');
@@ -83,6 +126,7 @@ export default function Login() {
             </button>
           </>
         )}
+
         <div id="recaptcha-container"></div>
       </div>
     </div>
