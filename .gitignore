@@ -11,6 +11,10 @@ node_modules
 dist
 dist-ssr
 *.local
+set-admin/serviceAccountKey.json
+functions/serviceAccountKey
+
+
 
 # Editor directories and files
 .vscode/*

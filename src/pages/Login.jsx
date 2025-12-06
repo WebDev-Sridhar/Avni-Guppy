@@ -1,133 +1,128 @@
 import React, { useState } from 'react';
+import { signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { auth } from '../utils/firebase';
-import { RecaptchaVerifier, signInWithPhoneNumber } from 'firebase/auth';
-import { doc, getDoc, setDoc } from 'firebase/firestore';
-import { db } from '../utils/firebase';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 export default function Login() {
-  const [phone, setPhone] = useState('');
-  const [otp, setOtp] = useState('');
-  const [showOtp, setShowOtp] = useState(false);
-  const [confirmationResult, setConfirmationResult] = useState(null);
+  const [form, setForm] = useState({ email: '', password: '' });
+  const [showResetForm, setShowResetForm] = useState(false);
+  const [resetEmail, setResetEmail] = useState('');
+  const navigate = useNavigate();
 
-  const mergeGuestCart = async (userId) => {
-    const guestCart = JSON.parse(localStorage.getItem('cart')) || [];
-    const userCartRef = doc(db, 'carts', userId);
-    const userSnap = await getDoc(userCartRef);
-
-    let merged = guestCart;
-
-    if (userSnap.exists()) {
-      const existing = userSnap.data().products || [];
-      const productMap = {};
-
-      // Merge quantities for same product IDs
-      existing.forEach(item => productMap[item.id] = item);
-      guestCart.forEach(item => {
-        if (productMap[item.id]) {
-          productMap[item.id].qty += item.qty;
-        } else {
-          productMap[item.id] = item;
-        }
-      });
-
-      merged = Object.values(productMap);
-    }
-
-    // Save merged cart to Firestore
-    await setDoc(userCartRef, { products: merged });
-
-    // Update localStorage
-    localStorage.setItem('cart', JSON.stringify(merged));
+  const handleChange = (e) => {
+    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-const setupRecaptcha = () => {
-  if (!window.recaptchaVerifier) {
-    window.recaptchaVerifier = new RecaptchaVerifier(auth, 'recaptcha-container', {
-      size: 'invisible',
-      callback: (response) => {
-        console.log('Recaptcha verified', response);
-      },
-    });
-  }
-};
-
-  const handleSendOtp = async () => {
-    setupRecaptcha();
-    const appVerifier = window.recaptchaVerifier;
-
+  const handleLogin = async (e) => {
+    e.preventDefault();
     try {
-      const formattedPhone = '+91' + phone;
-      const result = await signInWithPhoneNumber(auth, formattedPhone, appVerifier);
-      setConfirmationResult(result);
-      setShowOtp(true);
-      alert('OTP Sent!');
-    } catch (err) {
-      console.error("OTP Error:", err);
-      alert(err.message);
+      const userCredential = await signInWithEmailAndPassword(auth, form.email, form.password);
+      toast.success("Logged in successfully!");
+      navigate('/account');
+    } catch (error) {
+      toast.error("User Not Found / check your email and password");
     }
   };
-  const handleVerifyOtp = async () => {
+
+  const handlePasswordReset = async (e) => {
+    e.preventDefault();
+    if (!resetEmail) {
+      toast.error("Please enter your email to reset password");
+      return;
+    }
+
     try {
-      const result = await confirmationResult.confirm(otp);
-      const user = result.user;
-
-      alert('Phone Verified Successfully!');
-
-      // Merge guest cart with this user's cart
-      await mergeGuestCart(user.uid);
-
-      // (Optional) Redirect or store user info
-      // localStorage.setItem("uid", user.uid);
-      // navigate('/');
-
+      await sendPasswordResetEmail(auth, resetEmail);
+      toast.success("Reset link sent! Check your email.");
+      setShowResetForm(false);
     } catch (err) {
-      console.error("OTP Verification Failed:", err);
-      alert('Invalid OTP!');
+      toast.error("Failed to send reset link");
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-blue-50">
-      <div className="bg-white p-6 rounded-2xl shadow-lg w-80 text-center">
-        <h2 className="text-xl font-bold mb-4 text-blue-800">Login with Mobile</h2>
-
-        <input
-          type="text"
-          placeholder="Enter phone number"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          className="w-full p-2 border border-gray-300 rounded mb-4 focus:outline-none"
-        />
-
-        {!showOtp && (
-          <button
-            onClick={handleSendOtp}
-            className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded w-full"
-          >
-            Send OTP
-          </button>
-        )}
-
-        {showOtp && (
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+      <div className="w-full max-w-md bg-white p-6 rounded-lg shadow-lg">
+        {!showResetForm ? (
           <>
-            <input
-              type="text"
-              placeholder="Enter OTP"
-              value={otp}
-              onChange={(e) => setOtp(e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded mt-4 mb-2 focus:outline-none"
-            />
+            <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Login</h2>
+            <form onSubmit={handleLogin}>
+              <input
+                name="email"
+                type="email"
+                placeholder="Email"
+                value={form.email}
+                onChange={handleChange}
+                required
+                className="w-full p-2 mb-4 border border-gray-400 rounded outline-gray-600"
+              />
+              <input
+                name="password"
+                type="password"
+                placeholder="Password"
+                value={form.password}
+                onChange={handleChange}
+                required
+                className="w-full p-2 mb-4 border border-gray-400 rounded outline-gray-600"
+              />
+
+              <div className="text-right mb-4">
+                <button
+                  type="button"
+                  className="text-sm text-blue-600 hover:underline"
+                  onClick={() => setShowResetForm(true)}
+                >
+                  Forgot Password?
+                </button>
+              </div>
+
+              <button
+                type="submit"
+                className="w-full py-2 rounded button1"
+              >
+                Login
+              </button>
+            </form>
+
+            <div className="mt-4 text-center">
+              <p className="text-sm">
+                Don’t have an account?{' '}
+                <span
+                  className="text-blue-600 hover:underline cursor-pointer"
+                  onClick={() => navigate('/signup')}
+                >
+                  Register
+                </span>
+              </p>
+            </div>
+          </>
+        ) : (
+          <>
+            <h2 className="text-xl font-bold mb-4 text-center text-gray-800">Reset Password</h2>
+            <form onSubmit={handlePasswordReset}>
+              <input
+                type="email"
+                placeholder="Enter your registered email"
+                value={resetEmail}
+                onChange={(e) => setResetEmail(e.target.value)}
+                className="w-full p-2 mb-4 border border-gray-400 rounded outline-gray-600"
+              />
+              <button
+                type="submit"
+                className="w-full  py-2 rounded button1"
+              >
+                Send Reset Link
+              </button>
+            </form>
             <button
-              onClick={handleVerifyOtp}
-              className="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded w-full"
+              className="mt-4 text-sm text-gray-600 hover:underline block text-center"
+              onClick={() => setShowResetForm(false)}
             >
-              Verify OTP
+              Back to Login
             </button>
           </>
         )}
-
-        <div id="recaptcha-container"></div>
       </div>
     </div>
   );

@@ -1,33 +1,35 @@
 import CategoryCard from "../components/CategoryCard";
 import { Link } from "react-router-dom";
 const categories = [
-  { title: "Guppy Fish", image: "https://i.imgur.com/5Z6WzLz.jpg" },
-  { title: "Aquariums", image: "https://i.imgur.com/igUfpKz.jpg" },
-  { title: "Live Plants", image: "https://i.imgur.com/Acjz7fi.jpg" },
-  { title: "Fish Food", image: "https://i.imgur.com/4mrxS7I.jpg" },
-  { title: "Accessories", image: "https://i.imgur.com/ZC1S7fQ.jpg" },
+  {id: 1, path:"live fish", title: "Live fish", image: "./images/fish.svg" },
+  {id:2, path:"tanks", title: "Tanks", image: "./images/tank.jpeg" },
+  {id: 3, path:"live plants", title: "Live plants", image: "./images/plants.jpeg" },
+  {id: 4, path:"aquascaping", title: "Aquascaping", image: "./images/aquascaping.png" },
+  {id: 5, path:"fish food", title: "Fish food", image: "./images/food.jpg" },
 ];
 
 export default function ProductDetails() {
+  // const categoryName = useParams().categoryName;
   return (
-    <div>
+    <div className="bg-white-50 p-6 ">
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-blue-100 to-green-100 py-16 px-4 text-center">
-        <h1 className="text-4xl md:text-5xl font-bold text-blue-700 mb-4">Welcome to GuppyFarm</h1>
-        <p className="text-gray-700 mb-6 text-lg">
-          Your one-stop shop for guppies, tanks, plants, and all aquarium needs!
-        </p>
-        <button className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-6 rounded-full shadow">
-           <Link to="/shop" className="text-white-700">Shop</Link>
-        </button>
+     <section className=" bg-linear-to-t from-[#d5f0e6] to-#d5f0e6] py-20 text-center  rounded-2xl bg-cover bg-bottom mb-8">
+      <h1 className="text-6xl font-bold text-center text-green-900 mb-6">
+        Category
+      </h1>
+      <p className="text-gray-700 mb-6 text-bold text-lg">
+        “Splash into Color! Bright Guppies & Cool Gear for Your Tank.”
+      </p>
       </section>
 
       {/* Categories */}
       <section className="py-10 px-4">
         <h2 className="text-2xl font-semibold mb-6 text-center text-gray-800">Shop by Category</h2>
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
-          {categories.map((cat) => (
-            <CategoryCard key={cat.title} title={cat.title} image={cat.image} />
+          {categories.map(( cat) => (
+            <Link to={`/category/${cat.path}`}  key={cat.id} className="hover:scale-105 transition-transform duration-300">
+              <CategoryCard key={cat.id} title={cat.title} image={cat.image} />
+              </Link>
           ))}
         </div>
       </section>

@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "avni-guppies"
-  }
+    "default": "avni-guppies",
+    "avni-admin`": "avni-guppies"
+  },
+  "targets": {},
+  "etags": {}
 }
