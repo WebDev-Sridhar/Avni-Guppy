@@ -23,7 +23,7 @@ export default function OnSaleProducts() {
   }, []);
 
   return (
-    <div className="my-12 px-4">
+    <div className="my-12 px-4 rounded-2xl py-8">
                
       <h2 className="text-2xl font-bold text-center mb-6">On Sale Products</h2>
 <div className="grid grid-cols-1  gap-6">
@@ -38,8 +38,11 @@ export default function OnSaleProducts() {
               <Link
                 to={`/shop/${product.id}`}
                 key={product.id}
-                className="flex items-center gap-4 p-2 hover:bg-gray-50 rounded-md"
+                className="flex items-center gap-4 p-2 hover:shadow-lg rounded-md relative"
               >
+                <div className="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-br">
+                  {discount}% OFF
+                </div>
                 <img
                   src={product.image}
                   alt={product.title}
@@ -64,13 +67,6 @@ export default function OnSaleProducts() {
 
 
       </div>
-                  <div className="flex  my-10 justify-center items-center rounded-md">
-        <Link to={"/shop"}>  <img
-            src="/images/banner1.png"
-            alt="Promotional Banner"
-            className="rounded-2xl w-full md:h-100 object-cover"
-          /></Link>
-        </div>
     
     </div>
   );

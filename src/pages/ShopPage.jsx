@@ -3,6 +3,7 @@ import { useCart } from "../contexts/CartContext";
 import { db } from "../utils/firebase";
 import { collection, getDocs } from "firebase/firestore";
 import {Link} from "react-router-dom"
+import { ShoppingCartIcon } from '@heroicons/react/24/outline';
 
 
 
@@ -59,7 +60,7 @@ export default function ShopPage() {
 
             <div
               key={product.id}
-              className="bg-white rounded-xl shadow hover:shadow-lg transition overflow-hidden justify-self-stretch"
+              className="bg-white relative rounded-xl shadow hover:shadow-lg transition overflow-hidden justify-self-stretch"
             >
               <Link to={`/shop/${product.id}`}>
               <img
@@ -82,9 +83,9 @@ export default function ShopPage() {
                {product.inStock > 0 ? (
                   <button
                   onClick={() => addToCart(product)}
-                  className="bg-sky-600 text-white px-4 py-2 rounded hover:bg-sky-700 button1"
+                  className="px-4 py-2 absolute bottom-2 right-2 text-#000 hover:bg-green-900 hover:text-white rounded-b-lg"
                 >
-                  Add to Cart
+                 <ShoppingCartIcon className=" h-6 w-6 " />
                 </button>
               )
                : (
@@ -92,9 +93,9 @@ export default function ShopPage() {
                   
                   <button
                   onClick={() => alert("This product is currently out of stock.")}
-                  className="bg-gray-300 text-white px-4 py-2 rounded"
+                  className="bg-gray-300 text-white px-4 py-2 rounded absolute bottom-2 right-2"
                 >
-                  Add to Cart
+                  <ShoppingCartIcon className=" h-6 w-6 " />
                 </button>
                 <p className="text-gray-700 font-light mb-3">Out of Stock</p>
                 </>

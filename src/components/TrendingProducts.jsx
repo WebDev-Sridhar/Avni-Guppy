@@ -24,14 +24,14 @@ export default function TrendingProducts() {
   return (
     <div className="py-8">
                      <div className='grid grid-col-1 md:grid-cols-2 gap-8  my-10'>
-           <div className="flex items-center justify-center md:mt-20 ">
+           <div className="flex items-center justify-center md:mt-20 hover:scale-102 transition-transform duration-300 rounded-md ">
          <Link to={"/category/guppy"}> <img
             src="/images/banner3.png"
             alt="Promotional Banner"
             className="rounded-2xl w-full h-auto object-cover"
           /></Link>
         </div>
-            <div className="flex items-baseline-last md:mb-20 justify-center  rounded-md">
+            <div className="flex items-baseline-last md:mb-20 justify-center  hover:scale-102 transition-transform duration-300 rounded-md">
         <Link to={"/shop"}>  <img
             src="/images/banner2.png"
             alt="Promotional Banner"
@@ -49,7 +49,7 @@ export default function TrendingProducts() {
         {products.map(product => {
           const discount = Math.round(((product.originalprice - product.price) / product.originalprice) * 100);
           return (
-         <Link to={`/shop/${product.id}`} key={product.id} className="block text-center ">
+         <Link to={`/shop/${product.id}`} key={product.id} className="block text-center hover:scale-105 transition-transform duration-300">
                 <div className="relative ">
                   {discount > 0 && (
                     <span className="absolute top-0 right-0 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-bl">
@@ -71,9 +71,9 @@ export default function TrendingProducts() {
           );
         })}
       </div>
- <div className="flex items-center justify-between w-full h-20  bg-[#d5f0e6] rounded-md mt-10 px-4 md:px-10">
+ <div className="flex items-center justify-between w-full h-20  bg-[#eaf1ee] rounded-md mt-10 px-4 md:px-10">
   <h2 className='text-lg md:text-3xl font-bold text-green-800'>Explore the New Arrivals</h2>
-<Link to={"/guppy"}>  <button className='font-semibold border-2 border-green-800 text-green-800 px-4 py-2 rounded-md hover:text-green-600 cursor-pointer'>Check Now</button>
+<Link to={"/guppy"}>  <button className='font-semibold border-2 border-green-800 text-white bg-green-900 px-4 py-2 rounded-md hover:bg-green-950 cursor-pointer'>Check Now</button>
 </Link>    
         </div>
     </div>

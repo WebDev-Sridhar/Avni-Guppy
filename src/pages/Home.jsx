@@ -9,7 +9,7 @@ export default function Home() {
       
       {/* Hero Section */}
       <section className=" bg-linear-to-t from-[#d5f0e6] to-#d5f0e6] py-10 text-center  p-2  overflow-hidden rounded-2xl mb-8">
-        <h1 className="text-5xl font-extrabold  text-green-900 mb-4">
+        <h1 className="text-7xl font-extrabold  text-green-900 mb-4 ">
           Welcome to Avni Guppy Home
         </h1>
         <p className="text-lg  mb-8 text-green-900 ">
@@ -31,7 +31,7 @@ export default function Home() {
           Featured Categories
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-          <div className="bg-white rounded-xl shadow-md  text-center ">
+          <div className="bg-white rounded-xl shadow-md  text-center hover:scale-102 transition-transform duration-300">
             <Link to={"/guppy"}>
               <img
                 src="/images/card1.png"
@@ -40,7 +40,7 @@ export default function Home() {
               />
             </Link>
           </div>
-          <div className="bg-white rounded-xl shadow-md  text-center">
+          <div className="bg-white rounded-xl shadow-md  text-center hover:scale-102 transition-transform duration-300">
             <Link to={"/tanks"}>
               <img
                 src="/images/card2.png"
@@ -50,7 +50,7 @@ export default function Home() {
            
             </Link>
           </div>
-          <div className="bg-white rounded-xl shadow-md text-center">
+          <div className="bg-white rounded-xl shadow-md text-center hover:scale-102 transition-transform duration-300">
             <Link to={"/accessories"}>
               <img
                 src="/images/card3.png"

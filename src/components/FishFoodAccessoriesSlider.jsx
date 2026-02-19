@@ -54,9 +54,9 @@ export default function FishFoodAccessoriesSlider() {
           );
 
           return (
-            <div key={product.id} className="px-2">
+            <div key={product.id} className="p-2 hover:scale-90 transition-transform duration-300">
               <Link to={`/shop/${product.id}`} className="block text-center shadow-sm rounded-lg hover:shadow-lg">
-                <div className="relative">
+                <div className="relative ">
                   {discount > 0 && (
                     <span className="absolute top-0 right-0 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-bl">
                       {discount}% OFF

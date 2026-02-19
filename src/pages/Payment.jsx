@@ -85,10 +85,10 @@ useEffect(() => {
   
 
       {/* Product Summary */}
-      <div className="bg-white rounded p-4 shadow mb-6">
+      <div className="bg-white rounded p-4 shadow mb-6 max-w-2xl mx-auto">
         <h2 className="text-lg font-semibold mb-3">Your Order</h2>
         {cart.map((item) => (
-          <div key={item.id} className="flex items-center justify-between  py-2">
+          <div key={item.id} className="flex items-center justify-between  py-2 mb-4">
             <img src={item.image} alt={item.title} className="w-14 h-14 object-cover rounded" />
             <div className="flex-1 ml-4">
               <p className="font-semibold">{item.title}</p>

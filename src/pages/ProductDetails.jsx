@@ -6,6 +6,8 @@ import RelatedProducts from '../components/RelatedProducts';
 import { useCart } from "../contexts/CartContext";
 import BrandingBanner from '../components/BrandingBanner';
 
+
+
 export default function ProductDetails() {
   const  {productId}  = useParams();
   const [product, setProduct] = useState(null);
